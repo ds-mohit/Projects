@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction History</title>
+    <style>
+        /* Google Fonts: Poppins */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        /* Reset and Basic Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1f1c4d, #0a092d);
+            color: #e5e7eb; /* text-gray-200 */
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        
+        /* Header Link */
+        .header-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+        }
+        .header-link a {
+            color: #d1d5db;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        .header-link a:hover {
+            color: #fff;
+        }
+
+        /* Page Title */
+        .page-title h1 {
+            text-align: center;
+            font-weight: 700;
+            color: #fff;
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            margin-bottom: 2.5rem;
+        }
+        
+        /* Glass Card Style */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* Filter Form */
+        .filter-form {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .filter-form input[type="text"] {
+            flex-grow: 1;
+            padding: 0.8rem 1rem;
+            border-radius: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e5e7eb;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-form input[type="text"]:focus {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-color: #818cf8; /* indigo-400 */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+
+        .filter-form input[type="submit"] {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background: #4f46e5; /* indigo-600 */
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-form input[type="submit"]:hover {
+            background: #4338ca; /* indigo-700 */
+            transform: translateY(-1px);
+        }
+
+        /* Table Styling */
+        .table-container {
+            width: 100%;
+            overflow-x: auto; /* For mobile responsiveness */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 1rem 1.25rem;
+        }
+
+        thead {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            font-weight: 600;
+            color: #fff;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background-color 0.2s ease;
+        }
+        
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            color: #d1d5db; /* gray-300 */
+        }
+
+        .no-data-row td {
+            text-align: center;
+            padding: 3rem;
+            color: #9ca3af; /* gray-400 */
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="header-link">
+        <a href="{{ url_for('home') }}">&larr; Back to Home</a>
+    </header>
+
+    <div class="container">
+        <div class="page-title">
+            <h1>Prediction History</h1>
+        </div>
+
+        <!-- Filter Form -->
+        <form method="POST" class="filter-form">
+            <input type="text" name="brand_name_filter" placeholder="Enter brand name to filter...">
+            <input type="submit" value="Search">
+        </form>
+
+        <!-- Data Table -->
+        <div class="glass-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Brand</th>
+                            <th>Owner</th>
+                            <th>Kms Driven</th>
+                            <th>Age</th>
+                            <th>Power</th>
+                            <th>Predicted Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in historical_data %}
+                        <tr>
+                            <td>{{ row['id'] }}</td>
+                            <td>{{ row['brand_name'] }}</td>
+                            <td>{{ row['owner'] }}</td>
+                            <td>{{ row['kms_driven'] }}</td>
+                            <td>{{ row['age'] }}</td>
+                            <td>{{ row['power'] }}</td>
+                            <td>{{ row['prediction_price'] }}</td>
+                        </tr>
+                        {% else %}
+                        <tr class="no-data-row">
+                            <td colspan="7">No historical data found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
